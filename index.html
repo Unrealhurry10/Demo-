@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lumina Studio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #f5f0e8;
+      --ink: #1a1612;
+      --warm: #c8a96e;
+      --warm-light: #e8d5b0;
+      --muted: #7a7068;
+      --accent: #3d2b1a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Mono', monospace;
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.4rem 3rem;
+      background: var(--cream);
+      border-bottom: 1px solid var(--warm-light);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem; font-weight: 600; letter-spacing: 0.08em;
+      color: var(--ink); text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2.4rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      transition: color 0.25s;
+    }
+    .nav-links a:hover { color: var(--ink); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid; grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 8rem 3rem 4rem;
+      gap: 3rem;
+    }
+    .hero-text { animation: fadeUp 0.9s ease both; }
+    .hero-eyebrow {
+      font-size: 0.68rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--warm); margin-bottom: 1.8rem;
+    }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.5rem, 6vw, 6rem);
+      font-weight: 300; line-height: 1.05;
+      color: var(--ink); margin-bottom: 2rem;
+    }
+    .hero-title em { font-style: italic; color: var(--warm); }
+    .hero-desc {
+      font-size: 0.78rem; line-height: 1.9; color: var(--muted);
+      max-width: 360px; margin-bottom: 3rem;
+    }
+    .btn-group { display: flex; gap: 1.2rem; align-items: center; }
+    .btn-primary {
+      padding: 0.85rem 2.2rem;
+      background: var(--ink); color: var(--cream);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase;
+      border: none; cursor: pointer; text-decoration: none;
+      transition: background 0.25s, transform 0.2s;
+    }
+    .btn-primary:hover { background: var(--accent); transform: translateY(-2px); }
+    .btn-ghost {
+      font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      border-bottom: 1px solid var(--warm-light);
+      padding-bottom: 2px; transition: color 0.25s;
+    }
+    .btn-ghost:hover { color: var(--ink); }
+
+    .hero-visual {
+      position: relative; height: 520px;
+      animation: fadeUp 0.9s 0.2s ease both;
+    }
+    .hero-card {
+      position: absolute; border-radius: 2px;
+      background: var(--warm-light);
+      overflow: hidden;
+    }
+    .hero-card-main {
+      width: 75%; height: 80%; top: 0; right: 0;
+      background: linear-gradient(135deg, #d4b896 0%, #a07850 100%);
+      display: flex; align-items: flex-end; padding: 2rem;
+    }
+    .hero-card-main::before {
+      content: ''; position: absolute; inset: 0;
+      background: repeating-linear-gradient(45deg,
+        transparent, transparent 18px,
+        rgba(255,255,255,0.05) 18px, rgba(255,255,255,0.05) 19px);
+    }
+    .hero-card-label {
+      font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.8); position: relative;
+    }
+    .hero-card-sm {
+      width: 45%; height: 45%; bottom: 0; left: 0;
+      background: var(--ink);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hero-card-sm-inner {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8rem; font-weight: 300; color: var(--warm);
+      line-height: 1;
+    }
+    .hero-dot {
+      position: absolute; width: 10px; height: 10px;
+      border-radius: 50%; background: var(--warm);
+      top: 50%; left: -5%; transform: translateY(-50%);
+    }
+
+    /* ── STATS ── */
+    .stats {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--warm-light);
+      border-bottom: 1px solid var(--warm-light);
+    }
+    .stat-item {
+      padding: 2.5rem 3rem;
+      border-right: 1px solid var(--warm-light);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem; font-weight: 300; color: var(--ink);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted); margin-top: 0.5rem;
+    }
+
+    /* ── SERVICES ── */
+    .services { padding: 7rem 3rem; }
+    .section-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 4rem;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 300; line-height: 1.1;
+    }
+    .section-note {
+      font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--warm); align-self: flex-start; margin-top: 0.5rem;
+    }
+    .service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5px; }
+    .service-card {
+      padding: 2.8rem 2.2rem;
+      background: var(--cream);
+      border: 1px solid var(--warm-light);
+      transition: background 0.3s, transform 0.3s;
+      cursor: default;
+    }
+    .service-card:hover {
+      background: var(--ink); transform: translateY(-4px);
+    }
+    .service-card:hover .service-title,
+    .service-card:hover .service-desc { color: var(--cream); }
+    .service-card:hover .service-num { color: var(--warm); }
+    .service-num {
+      font-size: 0.65rem; letter-spacing: 0.2em;
+      color: var(--warm); margin-bottom: 1.8rem;
+      transition: color 0.3s;
+    }
+    .service-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem; font-weight: 400; margin-bottom: 1rem;
+      transition: color 0.3s;
+    }
+    .service-desc {
+      font-size: 0.72rem; line-height: 1.8; color: var(--muted);
+      transition: color 0.3s;
+    }
+
+    /* ── FEATURED ── */
+    .featured {
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: 60vh;
+    }
+    .featured-image {
+      background: linear-gradient(160deg, #2a1f14 0%, #6b4a28 50%, #c8893a 100%);
+      position: relative; overflow: hidden;
+    }
+    .featured-image::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(-45deg,
+        transparent, transparent 30px,
+        rgba(255,255,255,0.03) 30px, rgba(255,255,255,0.03) 31px);
+    }
+    .featured-image-label {
+      position: absolute; bottom: 2rem; left: 2rem;
+      font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(255,255,255,0.5); z-index: 1;
+    }
+    .featured-content {
+      background: var(--accent); color: var(--cream);
+      padding: 5rem 4rem;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .featured-tag {
+      font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--warm); margin-bottom: 1.8rem;
+    }
+    .featured-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8rem; font-weight: 300; line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+    .featured-body {
+      font-size: 0.75rem; line-height: 1.9;
+      color: rgba(245,240,232,0.65); margin-bottom: 2.5rem;
+    }
+    .btn-outline {
+      display: inline-block;
+      padding: 0.85rem 2.2rem;
+      border: 1px solid var(--warm);
+      color: var(--warm); text-decoration: none;
+      font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase;
+      transition: background 0.25s, color 0.25s;
+    }
+    .btn-outline:hover { background: var(--warm); color: var(--ink); }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 3rem;
+      border-top: 1px solid var(--warm-light);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem; color: var(--ink);
+    }
+    .footer-copy {
+      font-size: 0.65rem; letter-spacing: 0.1em; color: var(--muted);
+    }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-links a {
+      font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none; transition: color 0.25s;
+    }
+    .footer-links a:hover { color: var(--ink); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { gap: 1.4rem; }
+      .hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 3rem; }
+      .hero-visual { display: none; }
+      .stats { grid-template-columns: 1fr; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--warm-light); }
+      .services { padding: 4rem 1.5rem; }
+      .service-grid { grid-template-columns: 1fr; }
+      .featured { grid-template-columns: 1fr; }
+      .featured-image { min-height: 260px; }
+      .featured-content { padding: 3rem 1.5rem; }
+      footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">Lumina-V2</a>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-text">
+      <p class="hero-eyebrow">Creative Studio — Est. 2019</p>
+      <h1 class="hero-title">
+        Design that<br/>
+        <em>speaks</em><br/>
+        for itself.
+      </h1>
+      <p class="hero-desc">
+        We craft visual identities and digital experiences for brands
+        that refuse to be ordinary. Strategy, aesthetics, and craft —
+        all in one place.
+      </p>
+      <div class="btn-group">
+        <a href="#work" class="btn-primary">View Our Work</a>
+        <a href="#contact" class="btn-ghost">Get in Touch</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card hero-card-main">
+        <span class="hero-card-label">Brand Identity / 2025</span>
+      </div>
+      <div class="hero-card hero-card-sm">
+        <div class="hero-card-sm-inner">12+<br/>Years</div>
+      </div>
+      <div class="hero-dot"></div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-item">
+      <div class="stat-num">240+</div>
+      <div class="stat-label">Projects Delivered</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">98%</div>
+      <div class="stat-label">Client Satisfaction</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">34</div>
+      <div class="stat-label">Awards Won</div>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section class="services" id="services">
+    <div class="section-header">
+      <h2 class="section-title">What we<br/>create</h2>
+      <span class="section-note">Our Offering</span>
+    </div>
+    <div class="service-grid">
+      <div class="service-card">
+        <div class="service-num">01 —</div>
+        <h3 class="service-title">Brand Identity</h3>
+        <p class="service-desc">
+          Logos, palettes, type systems, and brand guidelines that
+          make your vision tangible and memorable across every touchpoint.
+        </p>
+      </div>
+      <div class="service-card">
+        <div class="service-num">02 —</div>
+        <h3 class="service-title">Web Design</h3>
+        <p class="service-desc">
+          Purposeful, performant websites with strong visual character.
+          Every pixel serves a reason; every interaction earns its place.
+        </p>
+      </div>
+      <div class="service-card">
+        <div class="service-num">03 —</div>
+        <h3 class="service-title">Art Direction</h3>
+        <p class="service-desc">
+          Visual storytelling for campaigns, editorials, and product
+          launches — from concept through final execution.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED -->
+  <section class="featured" id="work">
+    <div class="featured-image">
+      <span class="featured-image-label">Featured Project — Aurum Collective</span>
+    </div>
+    <div class="featured-content">
+      <p class="featured-tag">Case Study</p>
+      <h2 class="featured-title">Rebranding a luxury collective from the ground up.</h2>
+      <p class="featured-body">
+        Aurum Collective needed an identity that matched their ambition. We designed
+        a complete visual language — from wordmark to web — rooted in restraint and
+        refined craft. The result was a 3× increase in qualified leads within 60 days.
+      </p>
+      <a href="#" class="btn-outline">Read Case Study</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="contact">
+    <span class="footer-logo">Lumina Studio</span>
+    <div class="footer-links">
+      <a href="#">Instagram</a>
+      <a href="#">Behance</a>
+      <a href="#">LinkedIn</a>
+    </div>
+    <span class="footer-copy">© 2026 Lumina Studio. All rights reserved.</span>
+  </footer>
+
+</body>
+</html>
